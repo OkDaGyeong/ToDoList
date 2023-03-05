@@ -6,13 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Weekly Planner</title>
     <link rel="stylesheet" href="./style.css" />
+    <script src="app.js"></script>
   </head>
-  <body>
+  <body id="backGround">
     <div class="header">
-      <div class="left"></div>
+      <div class="left">
+        <h1 id="timer">00:00:00</h1>
+      </div>
       <div class="center"><h1>📌 Weekly Planner 📌</h1></div>
 
-      <div class="right"></div>
+      <div class="right">
+        <span id="city"></span>| <span id="weather"></span>|
+        <span id="temp"></span>
+      </div>
     </div>
     <div class="container">
       <div class="gridBox">
@@ -20,16 +26,25 @@
           <img
             src="./images/user.png"
             alt="프로필 이미지"
-            style="width: 200px; height: 200px; margin: 20px auto"
+            style="width: 200px; height: 200px; margin: 30px auto"
           />
-          <h1 id="username">username</h1>
+          <div>
+            <form class="hidden" id="login-form">
+              <input type="text" placeholder="What is your name?" />
+              <button>Login</button>
+            </form>
+            <h1 class="hidden" id="username">username</h1>
+          </div>
+          <button id="btnBack" onclick="changeImg()">배경이미지 바꾸기</button>
         </div>
         <div class="memo" id="monday">
           <h2>Monday</h2>
-          <ul>
-            <li>test</li>
-            <li>테스트입니다.</li>
-          </ul>
+          <div clss="memoList">
+            <ul id="list1"></ul>
+          </div>
+          <form id="input1">
+            <input type="text" placeholder="월요일 할일 입력" required />
+          </form>
         </div>
         <div class="memo" id="tuseday">
           <h2>Tuseday</h2>
@@ -51,5 +66,133 @@
         </div>
       </div>
     </div>
+    <script>
+      //시계
+      const timer = document.querySelector("#timer");
+      function getClock() {
+        const date = new Date();
+        const nhour = date.getHours().toString().padStart(2, "0");
+        const nMin = date.getMinutes().toString().padStart(2, "0");
+        const nSec = date.getSeconds().toString().padStart(2, "0");
+
+        timer.innerText = `${nhour}:${nMin}:${nSec}`;
+      }
+      getClock();
+      setInterval(getClock, 1000);
+
+      //로그인
+      const loginForm = document.querySelector("#login-form");
+      const loginInput = document.querySelector("#login-form input");
+      const loginButton = document.querySelector("#login-form button");
+      const userName = document.querySelector("#username");
+      const HIDDEN_CLASSNAME = "hidden";
+      const USERNAME_KEY = "user";
+      const savedUsername = localStorage.getItem(USERNAME_KEY);
+
+      if (savedUsername === null) {
+        loginForm.classList.remove("hidden");
+        loginButton.addEventListener("click", onLoginBtnClick);
+      } else {
+        paintGreetings(savedUsername);
+      }
+
+      function paintGreetings(username) {
+        userName.innerText = savedUsername;
+        userName.classList.remove("hidden");
+      }
+
+      function onLoginBtnClick(event) {
+        event.preventDefault();
+        loginForm.classList.add(HIDDEN_CLASSNAME);
+        localStorage.setItem(USERNAME_KEY, loginInput.value);
+        paintGreetings(username);
+      }
+      loginButton.addEventListener("click", onLoginBtnClick);
+
+      //할일 입력
+      const toDoForm = document.getElementById("input1");
+      const toDoInput = toDoForm.querySelector("input");
+      const toDoList = document.querySelector("#list1");
+      let ToDos = [];
+
+      function saveToDo() {
+        localStorage.setItem("ToDos", ToDos);
+      }
+      function delToDo(event) {
+        const li = event.target.parentElement;
+        li.remove();
+      }
+      function paintToDo(newToDo) {
+        const li = document.createElement("li");
+        const span = document.createElement("span");
+        span.innerText = newToDo;
+        const button = document.createElement("button");
+        button.innerText = "✖️";
+        button.style.border = "none";
+        button.style.background = "transparent";
+        button.addEventListener("click", delToDo);
+
+        li.appendChild(span);
+        li.appendChild(button);
+
+        toDoList.appendChild(li);
+      }
+      function handleToDoSubmit(event) {
+        event.preventDefault();
+        const newValue = toDoInput.value;
+        toDoInput.value = "";
+        ToDos.push(newValue);
+        paintToDo(newValue);
+        saveToDos();
+      }
+      toDoForm.addEventListener("submit", handleToDoSubmit);
+
+      const TODOS_KEY = "todos";
+      function saveToDos() {
+        localStorage.setItem(TODOS_KEY, JSON.stringify(ToDos));
+      }
+      const savedToDos = localStorage.getItem(TODOS_KEY);
+      if (savedToDos !== null) {
+        const parsedToDos = JSON.parse(savedToDos);
+        ToDos = parsedToDos;
+        parsedToDos.forEach(paintToDo);
+      }
+
+      //랜덤 배경이미지
+      const images = ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg"];
+
+      const body = document.querySelector("body");
+      const btnBack = document.querySelector("#btnBack");
+      function changeImg() {
+        const randomNum = Math.floor(Math.random() * images.length);
+        body.style.backgroundImage =
+          "url('./images/" + images[randomNum] + "')";
+      }
+
+      //날씨
+      //   const APIkey = "f4671143a7f6c68e8585518dc4a7fcd2";
+      const apiKey = "2834387742b25d5393a21e88fee8246a";
+
+      function onGeoOk(position) {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        const city = document.querySelector("#city");
+        const weather = document.querySelector("#weather");
+        const temp = document.querySelector("#temp");
+        // l.innerText = url;
+        const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+        fetch(url)
+          .then((response) => response.json())
+          .then((data) => {
+            city.innerText = data.name;
+            weather.innerText = data.weather[0].main;
+            temp.innerText = data.main.temp + "°C";
+          });
+      }
+      function onGeoError() {
+        alert("Can't find you. No weather for you.");
+      }
+      navigator.geolocation.getCurrentPosition(onGeoOk, onGeoError);
+    </script>
   </body>
 </html>
