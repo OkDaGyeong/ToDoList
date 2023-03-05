@@ -1,0 +1,68 @@
+@font-face {
+  font-family: "Dovemayo_gothic";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.1/Dovemayo_gothic.woff2")
+    format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}
+body {
+  margin: 0;
+  padding: 0;
+  background-image: url(./images/2.jpg);
+  font-family: "Dovemayo_gothic";
+}
+.header {
+  width: 100%;
+  height: 150px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+.header h1 {
+  font-size: 50px;
+  text-align: center;
+  /*background-color: rgba(251, 249, 246, 1);*/
+  background-color: #fbf9f6;
+  padding: 20px;
+  border-bottom: 6px double #182747;
+}
+
+.container {
+  width: 100%;
+}
+.gridBox {
+  border: 2px solid #182747;
+  width: 1500px;
+  height: 800px;
+  margin: 50px auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 400px);
+  background-color: #fbf9f6;
+}
+.memo {
+  border: 2px solid #182747;
+}
+
+.memo h2 {
+  text-align: center;
+  color: #182747;
+  margin: 0;
+  padding: 12px;
+  border-bottom: 2px solid #182747;
+}
+.memo ul li {
+  font-size: 25px;
+}
+
+#first {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  text-align: center;
+}
+
+.left,
+.right {
+  background-color: #fbf9f6;
+  margin: 20px 50px;
+}
