@@ -53,12 +53,18 @@ body {
   flex-direction: column;
   justify-content: space-between;
 }
-#input1 input {
-  width: 375px;
+#input1 input,
+#input2 input,
+#input3 input,
+#input4 input,
+#input5 input,
+#input6 input,
+#input7 input {
+  width: 360px;
 }
 
 /* todo list 스크롤 */
-#monday ul {
+.memo ul {
   display: block;
   overflow-y: auto;
   -ms-overflow-style: none;
@@ -66,7 +72,7 @@ body {
   margin: 0;
 }
 /*  todo list 스크롤 숨기기 */
-#monday ul::-webkit-scrollbar {
+.memo ul::-webkit-scrollbar {
   display: none;
   width: 0 !important;
 }
