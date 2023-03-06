@@ -11,6 +11,7 @@ if (savedUsername === null) {
   loginForm.classList.remove("hidden");
   loginButton.addEventListener("click", onLoginBtnClick);
 } else {
+  userName.classList.remove("hidden");
   paintGreetings(savedUsername);
 }
 
@@ -20,7 +21,7 @@ function paintGreetings(username) {
 }
 
 function onLoginBtnClick(event) {
-  event.preventDefault();
+  //event.preventDefault();
   loginForm.classList.add(HIDDEN_CLASSNAME);
   localStorage.setItem(USERNAME_KEY, loginInput.value);
   paintGreetings(username);
